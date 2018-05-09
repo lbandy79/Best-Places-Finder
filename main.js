@@ -65,28 +65,20 @@ let lng = [];
   });
 
 function getValues() {
-	places = [name, lat, lng]
-	console.log(places);
-	for (var i = 0; i <= places.length; i++) {
-		console.log(lat[i]);
-		for (var j = 0; j < places[i].length; j++) {
-  		marker = new L.marker([lat[i][j], lng[i][j]])
-  		.addTo(mymap)
-  		.bindPopup(name[i][j])
-  		.openPopup();
+	places = [name, lat, lng];//name, lat, and lng are indivudal arrays.
+		for(let i=0; i<places.length; i++) {
+    		for (let j=0; j<places[i].length; j++) {
+     		console.log(places[1][j]);
+     	
+     	marker = new L.marker([places[1][j],places[2][j]])
+  			.addTo(mymap)
+  			.bindPopup(places[0][j])
+  			.openPopup();
   		}
-  	}
-  	/*Place 1
-  	L.marker([lat[1], lng[1]])
-  	.addTo(mymap)
-  	.bindPopup(name[1])
-  	.openPopup();
-  	//Place 2
-  	L.marker([lat[3], lng[3]])
-  	.addTo(mymap)
-  	.bindPopup(name[3])
-  	.openPopup();*/
+
+    }
 }
+		
 
 // Leaflet Map
 let mymap = L.map("mapid").setView([51.505, -0.09], 0);
