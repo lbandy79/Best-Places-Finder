@@ -1,18 +1,13 @@
-$(document).ready(function() {
 // Foursquare API Info
 const clientId = "BJNMKJXYSLKY4ZGMFILFJLJEVEPHLV1VSJJKUEYCR2JBMUT5";
 const clientSecret = "3W1KGSHH3NSQJPYRVNCV025DGR2XU241GO4R2VQT4UYZYEC3";
 const url = "https://api.foursquare.com/v2/venues/explore?near=";
-
-
-
 
 // Page Elements
 const $input = $("#city");
 const $submit = $("#button");
 const $destination = $("#destination");
 const $container = $(".container");
-
 
 //AJAX Function
 async function getVenues() {
@@ -43,42 +38,25 @@ let name = [];
 let lat = [];
 let lng = [];
 //Submitt Function
-  $("#button").click(function(event) {
-    event.preventDefault();
-    getVenues()
-		.then(function(venues) {
-			console.log(venues);
-			venues.forEach(($venue, index) => {
-    			name.push(venues[index].name);
-    		});	
-    		venues.forEach(($venue, index) => {
-    			lat.push(venues[index].location.lat);
-    		});
-    		venues.forEach(($venue, index) => {
-    			lng.push(venues[index].location.lng);
-    		});
-    		console.log(name);
-    		console.log(lat);
-    		console.log(lng);
-    		getValues();
-		});
+$("#button").click(function(event) {
+  event.preventDefault();
+  getVenues().then(function(venues) {
+    console.log(venues);
+    venues.forEach(($venue, index) => {
+      name.push(venues[index].name);
+    });
+    venues.forEach(($venue, index) => {
+      lat.push(venues[index].location.lat);
+    });
+    venues.forEach(($venue, index) => {
+      lng.push(venues[index].location.lng);
+    });
+    console.log(name);
+    console.log(lat);
+    console.log(lng);
+    getValues();
   });
-
-function getValues() {
-	places = [name, lat, lng];//name, lat, and lng are indivudal arrays.
-		for(let i=0; i<places.length; i++) {
-    		for (let j=0; j<places[i].length; j++) {
-     		console.log(places[1][j]);
-     	
-     	marker = new L.marker([places[1][j],places[2][j]])
-  			.addTo(mymap)
-  			.bindPopup(places[0][j])
-  			.openPopup();
-  		}
-
-    }
-}
-		
+});
 
 // Leaflet Map
 let mymap = L.map("mapid").setView([51.505, -0.09], 0);
@@ -95,14 +73,19 @@ L.tileLayer(
   }
 ).addTo(mymap);
 
+map.panTo(new L.LatLng(lat, lng));
 
-
-L.circle([51.508, -0.11], {
-  color: "red",
-  fillColor: "#f03",
-  fillOpacity: 0.5,
-  radius: 500
-}).addTo(mymap);
-
-});
+//Markers
+function getValues() {
+  places = [name, lat, lng]; //name, lat, and lng are indivudal arrays.
+  for (let i = 0; i < places.length; i++) {
+    for (let j = 0; j < places[i].length; j++) {
+      console.log(places[1][j]);
+      marker = new L.marker([places[1][j], places[2][j]])
+        .addTo(mymap)
+        .bindPopup(places[0][j])
+        .openPopup();
+    }
+  }
+}
 
