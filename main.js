@@ -6,8 +6,6 @@ const url = "https://api.foursquare.com/v2/venues/explore?near=";
 // Page Elements
 const $input = $("#city");
 const $submit = $("#button");
-const $destination = $("#destination");
-const $container = $(".container");
 
 //AJAX Function
 async function getVenues() {
@@ -15,7 +13,7 @@ async function getVenues() {
   const urlToFetch =
     url +
     city +
-    "&venuePhotos=1&limit=10&client_id=" +
+    "&limit=10&client_id=" +
     clientId +
     "&client_secret=" +
     clientSecret +
@@ -23,7 +21,9 @@ async function getVenues() {
   try {
     let response = await fetch(urlToFetch);
     if (response.ok) {
+    	getTips();
       let jsonResponse = await response.json();
+      console.log(jsonResponse);
       let venues = jsonResponse.response.groups[0].items.map(
         location => location.venue
       );
@@ -34,6 +34,35 @@ async function getVenues() {
   }
 }
 
+async function getTips() {
+  const urlToFetch =
+    tipsUrl +
+    id[0] + "/tips?client_id=" +
+    clientId +
+    "&client_secret=" +
+    clientSecret +
+    "&v=20180430";
+  try {
+    let response = await fetch(urlToFetch);
+    if (response.ok) {
+      let jsonResponse = await response.json();
+      console.log(jsonResponse);
+      let tips = jsonResponse.response.tips.items.map(
+        text => text.text
+      );
+      console.log(tips);
+      return tips;
+    }
+  }
+  catch (error) {
+    console.log(error);
+  } 
+}
+
+let bestTip = [];
+let id = [];
+console.log(id);
+let address = [];
 let name = [];
 let lat = [];
 let lng = [];
@@ -42,50 +71,84 @@ $("#button").click(function(event) {
   event.preventDefault();
   getVenues().then(function(venues) {
     console.log(venues);
-    venues.forEach(($venue, index) => {
+    venues.forEach((venue, index) => {
       name.push(venues[index].name);
     });
-    venues.forEach(($venue, index) => {
+    venues.forEach((venue, index) => {
       lat.push(venues[index].location.lat);
     });
-    venues.forEach(($venue, index) => {
+    venues.forEach((venue, index) => {
       lng.push(venues[index].location.lng);
     });
-    console.log(name);
-    console.log(lat);
-    console.log(lng);
+    venues.forEach((venue, index) => {
+      address.push(venues[index].location.address);
+    });
+    venues.forEach((venue, index) => {
+      id.push(venues[index].id);
+    });
+    getTips().then(function(tips) {
+    	bestTip.push(tips);
+  	});
     getValues();
   });
 });
 
 // Leaflet Map
-let mymap = L.map("mapid").setView([51.505, -0.09], 0);
+ var watercolor = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 1,
+	maxZoom: 16,
+	ext: 'png'
+});
+var blackWhite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 20,
+	ext: 'png'
+});
+var terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: 'abcd',
+	minZoom: 0,
+	maxZoom: 18,
+	ext: 'png'
+});
 
-L.tileLayer(
-  "https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw",
-  {
-    maxZoom: 18,
-    attribution:
-      'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-      '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-      'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    id: "mapbox.streets"
-  }
-).addTo(mymap);
+var star = L.icon({
+    iconUrl: 'star.png',
 
-map.panTo(new L.LatLng(lat, lng));
+    iconSize:     [30, 30], // size of the icon
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
+let mymap = L.map("mapid",{
+	center: [51.505, -0.09], 
+	zoom: 10, 
+	layers: [blackWhite]
+});
+
+var baseMaps = {
+	"Watercolor": watercolor,
+	"Black and Whte": blackWhite,
+	"Terrian": terrain
+};
+
+L.control.layers(baseMaps).addTo(mymap);
+
+mymap.panTo(new L.LatLng([lat, lng]), 13);
 
 //Markers
 function getValues() {
-  places = [name, lat, lng]; //name, lat, and lng are indivudal arrays.
+  places = [name, lat, lng, address];
   for (let i = 0; i < places.length; i++) {
     for (let j = 0; j < places[i].length; j++) {
-      console.log(places[1][j]);
-      marker = new L.marker([places[1][j], places[2][j]])
+      marker = new L.marker([places[1][j], places[2][j]], {icon: star})
         .addTo(mymap)
-        .bindPopup(places[0][j])
+        .bindPopup("<b>" + places[0][j] + "</b><br>" + places[3][j] + "<br>" + bestTip[0])
         .openPopup();
     }
   }
 }
-
