@@ -21,47 +21,19 @@ async function getVenues() {
   try {
     let response = await fetch(urlToFetch);
     if (response.ok) {
-    	getTips();
       let jsonResponse = await response.json();
-      console.log(jsonResponse);
       let venues = jsonResponse.response.groups[0].items.map(
         location => location.venue
       );
       return venues;
+    } else {
+        $(".oops").append("<p>Oops...no plaes found</p>");
     }
   } catch (error) {
     console.log(error);
   }
 }
 
-async function getTips() {
-  const urlToFetch =
-    tipsUrl +
-    id[0] + "/tips?client_id=" +
-    clientId +
-    "&client_secret=" +
-    clientSecret +
-    "&v=20180430";
-  try {
-    let response = await fetch(urlToFetch);
-    if (response.ok) {
-      let jsonResponse = await response.json();
-      console.log(jsonResponse);
-      let tips = jsonResponse.response.tips.items.map(
-        text => text.text
-      );
-      console.log(tips);
-      return tips;
-    }
-  }
-  catch (error) {
-    console.log(error);
-  } 
-}
-
-let bestTip = [];
-let id = [];
-console.log(id);
 let address = [];
 let name = [];
 let lat = [];
@@ -83,12 +55,6 @@ $("#button").click(function(event) {
     venues.forEach((venue, index) => {
       address.push(venues[index].location.address);
     });
-    venues.forEach((venue, index) => {
-      id.push(venues[index].id);
-    });
-    getTips().then(function(tips) {
-    	bestTip.push(tips);
-  	});
     getValues();
   });
 });
@@ -127,7 +93,7 @@ var star = L.icon({
 let mymap = L.map("mapid",{
 	center: [51.505, -0.09], 
 	zoom: 10, 
-	layers: [blackWhite]
+	layers: [watercolor]
 });
 
 var baseMaps = {
@@ -138,7 +104,13 @@ var baseMaps = {
 
 L.control.layers(baseMaps).addTo(mymap);
 
-mymap.panTo(new L.LatLng([lat, lng]), 13);
+mymap.fitWorld().zoomIn();
+
+function centerLeafletMapOnMarker(map, marker) {
+  var latLngs = [ marker.getLatLng() ];
+  var markerBounds = L.latLngBounds(latLngs);
+  map.fitBounds(markerBounds);
+}
 
 //Markers
 function getValues() {
@@ -147,8 +119,9 @@ function getValues() {
     for (let j = 0; j < places[i].length; j++) {
       marker = new L.marker([places[1][j], places[2][j]], {icon: star})
         .addTo(mymap)
-        .bindPopup("<b>" + places[0][j] + "</b><br>" + places[3][j] + "<br>" + bestTip[0])
+        .bindPopup("<b>" + places[0][j] + "</b><br>" + places[3][j])
         .openPopup();
+      mymap.panTo([places[1][0], places[2][0]], 5);
     }
   }
 }
