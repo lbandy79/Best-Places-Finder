@@ -14,14 +14,15 @@
    crossorigin=""></script>
 </head>
 <body>
-	<nav class="navbar">
-    <form>
-        	<input type="search" placeholder="Where are you?" aria-label="Search" id="city">
-        	<button id="button" type="submit">Get Best Places</button>
-          <a class=name>BesT PLaCEs FiNDer</a>
-          <a class=oops></a>
-    </form>
-	</nav>
+  <form>
+      <h1>BesT PLaCEs FiNDer</h1>
+      <input type="search" placeholder="Enter Address" aria-label="Search" id="city">
+      <div id="container">
+        <button id="button" type="submit">Get Best Places</button>
+        <button id="clear" type="submit">Clear Places</button>
+        <h2 class=oops></h2>
+      </div>
+  </form>
    	<div class='custom-popup' id="mapid"></div>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="main.js"></script>

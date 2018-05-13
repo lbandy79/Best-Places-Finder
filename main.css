@@ -1,24 +1,29 @@
 body { 
 	padding:0; margin:0; 
-}
-
-nav {
 	background-color: #2262a2;
-	height: 45px;
 }
 
-.name {
+h1 {
 	font-family: 'Fredericka the Great', cursive;
 	color: white;
-	margin-left: 100px;
+	margin: 0 auto;
 	font-size: 25px;
+	display: block;
+	width: 275px;
+}
+
+h2 {
+	font-family: 'Fredericka the Great', cursive;
+	color: #060606;
+	margin: 0 auto;
+	font-size: 20px;
+	display: block;
+	width: 200px;
 }
 
 p {
-	font-family: 'Fredericka the Great', cursive;
-	color: #060606;
-	margin-left: 55px;
-	font-size: 20px;
+	margin-top: 6px;
+	margin-bottom: 6px;
 }
 
 
@@ -28,11 +33,23 @@ input {
 
 button {
 	font-family: 'Fredericka the Great', cursive;
-	height: 30px;
-	margin: 5px;
+	height: 20px;
 	border-radius: 13px;
+	padding: 2px;
+	width: 100px;
 }
 
+#container {
+    text-align: center;
+    padding: 6px;
+}
+
+input {
+	display: block;
+	width: 100px;
+	margin: 0 auto;
+    border-radius: 10px;
+}
 #mapid { 
 	z-index:-1; 
 	position:absolute; 

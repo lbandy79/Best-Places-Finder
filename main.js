@@ -67,6 +67,7 @@ $("#button").click(function(event) {
 	maxZoom: 16,
 	ext: 'png'
 });
+
 var blackWhite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
 	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	subdomains: 'abcd',
@@ -74,6 +75,7 @@ var blackWhite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z
 	maxZoom: 20,
 	ext: 'png'
 });
+
 var terrain = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
 	attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	subdomains: 'abcd',
@@ -106,22 +108,31 @@ L.control.layers(baseMaps).addTo(mymap);
 
 mymap.fitWorld().zoomIn();
 
-function centerLeafletMapOnMarker(map, marker) {
-  var latLngs = [ marker.getLatLng() ];
-  var markerBounds = L.latLngBounds(latLngs);
-  map.fitBounds(markerBounds);
-}
 
 //Markers
 function getValues() {
   places = [name, lat, lng, address];
   for (let i = 0; i < places.length; i++) {
     for (let j = 0; j < places[i].length; j++) {
+      console.log(places[1][0]);
       marker = new L.marker([places[1][j], places[2][j]], {icon: star})
+        .on('click', function() {
+          centerLeafletMapOnMarker(mymap, this);
+        })
         .addTo(mymap)
         .bindPopup("<b>" + places[0][j] + "</b><br>" + places[3][j])
         .openPopup();
-      mymap.panTo([places[1][0], places[2][0]], 5);
     }
+    mymap.flyTo([places[1][0], places[2][0]], 12);
   }
+}
+
+$("#clear").click(function(event) {
+  marker.clearLayers();
+});
+
+function centerLeafletMapOnMarker(map, marker) {
+  var latLngs = [ marker.getLatLng() ];
+  var markerBounds = L.latLngBounds(latLngs);
+  map.fitBounds(markerBounds);
 }
