@@ -92,9 +92,7 @@ var star = L.icon({
     popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 });
 
-let mymap = L.map("mapid",{
-	center: [51.505, -0.09], 
-	zoom: 10, 
+let mymap = L.map("mapid",{ 
 	layers: [watercolor]
 });
 
