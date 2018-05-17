@@ -29,7 +29,7 @@ let lng = [];
 //Submitt Function
 $("#search").click(function(event) {
   event.preventDefault();
-  $("input, #search,.oops").hide();
+  $("input, #search").hide();
   $("#clear").show();
   getVenues().then(function(venues) {
     console.log(venues);
