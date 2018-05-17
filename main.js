@@ -27,8 +27,10 @@ let name = [];
 let lat = [];
 let lng = [];
 //Submitt Function
-$("#button").click(function(event) {
+$("#search").click(function(event) {
   event.preventDefault();
+  $("input, #search,.oops").hide();
+  $("#clear").show();
   getVenues().then(function(venues) {
     console.log(venues);
     venues.forEach((venue, index) => {
@@ -99,6 +101,9 @@ function getValues() {
     mymap.flyTo([places[1][0], places[2][0]], 12);
   }
 }
+
+$("#clear").hide();
+
 $("#clear").click(function(event) {
   marker.clearLayers();
 });

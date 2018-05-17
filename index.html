@@ -11,14 +11,19 @@
 	</script>
 </head>
 <body>
-	<form>
-		<h1>BesT PLaCEs FiNDer</h1><input aria-label="Search" id="city" placeholder="Enter Place" type="search">
-		<div id="container">
-			<button id="button" type="submit">Get Best Places</button> <button id="clear" type="submit">Clear Places</button>
-			<h2 class="oops"></h2>
-		</div>
-	</form>
-	<div class='custom-popup' id="mapid"></div>
+	<header>
+		<form>
+			<h1>BesT PLaCEs FiNDer</h1>
+			<p>Welcome to Best Places Finder! Enter a city and we'll find the best places for you!</p>
+			<input aria-label="Search" id="city" placeholder="Enter Place" type="search">
+			<div id="container">
+				<button id="search" type="submit">Get Best Places</button> 
+				<button id="clear" type="submit">Search Again!</button>
+				<h2 class="oops"></h2>
+			</div>
+		</form>
+	</header>
+	<main class='custom-popup' id="mapid"></main>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js">
 	</script> 
 	<script src="main.js">
